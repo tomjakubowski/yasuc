@@ -129,8 +129,11 @@ func newHandler(db *bolt.DB) http.Handler {
 }
 
 func main() {
-	var dbPath string
+	var dbPath, addr string
+	var port int
 	flag.StringVar(&dbPath, "db", "", "location of database file")
+	flag.StringVar(&addr, "addr", "", "bind address")
+	flag.IntVar(&port, "port", 9001, "bind port")
 	flag.Parse()
 	if dbPath == "" {
 		fmt.Fprintf(os.Stderr, "db option is required\n")
@@ -152,5 +155,6 @@ func main() {
 	}
 
 	http.Handle("/", newHandler(db))
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	sockAddr := fmt.Sprintf("%s:%d", addr, port)
+	log.Fatal(http.ListenAndServe(sockAddr, nil))
 }
