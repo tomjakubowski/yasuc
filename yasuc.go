@@ -153,10 +153,6 @@ func main() {
 		log.Fatal(err)
 	}
 
-	if db == nil {
-		log.Fatal("WHAT THE FUCK")
-	}
-
 	http.Handle("/", newHandler(db))
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
