@@ -14,7 +14,6 @@ import (
 )
 
 const (
-	baseUrl      = "http://localhost:8080"
 	pastesBucket = "pastes"
 	maxPasteSize = 4 * 1024 * 1024
 )
@@ -115,7 +114,14 @@ func (h *handler) alles(w http.ResponseWriter, req *http.Request) {
 			}
 			return
 		}
-		fmt.Fprintf(w, "%s/%s\n", baseUrl, key)
+		host := req.Host
+		if len(host) > 0 {
+			// fixme: HTTPS
+			baseURL := fmt.Sprintf("http://%s", host)
+			fmt.Fprintf(w, "%s/%s\n", baseURL, key)
+		} else {
+			fmt.Fprintf(w, "%s", key)
+		}
 		return
 	}
 	fmt.Fprintf(w, "usage message goes here\n")
