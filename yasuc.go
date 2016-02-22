@@ -58,10 +58,8 @@ func (e pasteNotFound) Error() string {
 }
 
 func fetchPaste(db *bolt.DB, key string) (paste string, err error) {
-	type notFound struct{}
 	rawKey, err := hex.DecodeString(key)
-	if err != nil {
-		// bad URL
+	if err != nil { // bad URL
 		err = pasteNotFound{}
 		return
 	}
