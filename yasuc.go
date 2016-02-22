@@ -16,9 +16,20 @@ import (
 const (
 	baseUrl      = "http://localhost:8080"
 	pastesBucket = "pastes"
+	maxPasteSize = 4 * 1024 * 1024
 )
 
+type pasteTooLarge struct{}
+
+func (e pasteTooLarge) Error() string {
+	return fmt.Sprintf("paste too large (maximum size %d bytes)", maxPasteSize)
+}
+
 func stashPaste(db *bolt.DB, pasteStr string) (key string, err error) {
+	if len(pasteStr) > maxPasteSize {
+		err = pasteTooLarge{}
+		return
+	}
 	paste := []byte(pasteStr)
 	rawKey := sha256.Sum256(paste)
 	// TODO: launch nukes on collision
@@ -50,6 +61,8 @@ func fetchPaste(db *bolt.DB, key string) (paste string, err error) {
 	type notFound struct{}
 	rawKey, err := hex.DecodeString(key)
 	if err != nil {
+		// bad URL
+		err = pasteNotFound{}
 		return
 	}
 	var rawPaste []byte
@@ -80,7 +93,11 @@ func (h *handler) alles(w http.ResponseWriter, req *http.Request) {
 	if req.URL.Path != "/" {
 		paste, err := fetchPaste(h.db, req.URL.Path[1:])
 		if err != nil {
-			http.Error(w, "not found", http.StatusNotFound)
+			if _, ok := err.(pasteNotFound); ok {
+				http.Error(w, "not found", http.StatusNotFound)
+			} else {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			}
 			return
 		}
 		fmt.Fprintf(w, "%s", paste)
@@ -93,7 +110,11 @@ func (h *handler) alles(w http.ResponseWriter, req *http.Request) {
 		// an empty paste.
 		key, err := stashPaste(h.db, body)
 		if err != nil {
-			http.Error(w, "db update error", http.StatusInternalServerError)
+			if _, ok := err.(pasteTooLarge); ok {
+				http.Error(w, err.Error(), http.StatusNotAcceptable)
+			} else {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			}
 			return
 		}
 		fmt.Fprintf(w, "%s/%s\n", baseUrl, key)
