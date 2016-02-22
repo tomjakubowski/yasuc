@@ -114,14 +114,8 @@ func (h *handler) alles(w http.ResponseWriter, req *http.Request) {
 			}
 			return
 		}
-		host := req.Host
-		if len(host) > 0 {
-			// fixme: HTTPS
-			baseURL := fmt.Sprintf("http://%s", host)
-			fmt.Fprintf(w, "%s/%s\n", baseURL, key)
-		} else {
-			fmt.Fprintf(w, "%s", key)
-		}
+		baseURL := fmt.Sprintf("http://%s", req.Host)
+		fmt.Fprintf(w, "%s/%s\n", baseURL, key)
 		return
 	}
 	fmt.Fprintf(w, "usage message goes here\n")
