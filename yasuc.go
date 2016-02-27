@@ -66,7 +66,7 @@ COPYRIGHT
     <a href="https://www.gnu.org/licenses/agpl-3.0.en.html">https://www.gnu.org/licenses/agpl-3.0.en.html</a>.
 
     This is free software; you are free to change and redistribute it.  There
-    is NO WARRANTY, to the extend permitted by law.  For copying conditions and
+    is NO WARRANTY, to the extent permitted by law.  For copying conditions and
     source, see <a href="https://github.com/tomjakubowski/yasuc">https://github.com/tomjakubowski/yasuc</a>.
 
 SEE ALSO
