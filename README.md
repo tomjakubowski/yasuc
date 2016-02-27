@@ -8,15 +8,15 @@ yet another [sprunge.us](http://sprunge.us/) clone
 
 ``` bash
 $ go get github.com/tomjakubowski/yasuc
+$ yasuc -db /path/to/db -port PORT -addr BIND-ADDR
 ```
 
-A Dockerfile is provided.  yasuc will write its data file to /data in the
-container; it's a good idea to create and/or mount a volume there.
+A Dockerfile is provided.
 
 ``` bash
 $ cd $GOPATH/github.com/tomjakubowski/yasuc
-$ sudo docker build .
-$ sudo docker run -d -P --name yasuc-test -v /data yasuc
+$ sudo docker build -t yasuc/yasuc:v0 .
+$ sudo docker run -d -P --name yasuc-test yasuc/yasuc:v0
 ```
 
 The `docker run` command will map a randomized port on the host to each of the
