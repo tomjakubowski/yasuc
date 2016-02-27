@@ -46,3 +46,10 @@ hello world
 ```
 
 Each paste is identified by the SHA-256 digest of its contents.
+
+## copyright
+
+Copyright (c) Tom Jakubowski.  License AGPLv3: Affero GPL Version 3.  This is
+free software; you are free to change and redistribute it.  There is NO
+WARRANTY, to the extent permitted by law.  For copying conditions and source,
+see the LICENSE.txt file.
